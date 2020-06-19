@@ -4,4 +4,4 @@ Calculating the forces on the bodies with direct sum is in O(n^2) but we can tak
 
 The algorithm reduces the complexity to O(n log n).
 To accelerate the simulation, the Leapfrog Method has been used.
-![](https://imgur.com/a/24GiW8W.gif)
+![](https://im3.ezgif.com/tmp/ezgif-3-1213630c77e9.gif)
