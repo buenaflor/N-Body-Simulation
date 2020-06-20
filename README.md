@@ -6,4 +6,4 @@ The approximation algorithm reduces the complexity to O(n log n) and has been im
 To accelerate the simulation, the Leapfrog Method has been used.
 
 
-![](https://gfycat.com/earlyunsteadycurlew)
+![](https://s7.gifyu.com/images/ezgif.com-crop-1b7cfcffd97856977.md.gif)
