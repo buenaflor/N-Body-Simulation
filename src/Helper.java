@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.util.Random;
 
+
+// This is a helper class that contain static methods that are useful in many other instances throughout the project
 public class Helper {
 
     private static Random rand = new Random();

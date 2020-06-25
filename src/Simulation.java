@@ -1,6 +1,7 @@
-import java.awt.*;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Simulation {
 
@@ -35,20 +36,75 @@ public class Simulation {
         }
     }
 
+    // Starts the simulation
     private static void startSimulation() {
-        CelestialBody[] bodies;
+        CelestialBody[] bodies = new CelestialBody[0];
+        Scanner sc = new Scanner(System.in);
 
-        System.out.print("Enter number of bodies to be generated: ");
-        int numberOfBodies = StdIn.readInt();
+        int choice = 0;
 
-        // Reads galaxies from the values of txt - has to be inserted manually in console
-        bodies = CelestialBody.readGalaxy(numberOfBodies);
+        while (choice != 1 && choice != 2) {
+            System.out.println("Press 1: Read galaxy from files ");
+            System.out.println("Press 2: Generate random bodies ");
+            System.out.print("Choice: ");
+            choice = sc.nextInt();
+
+            if (choice == 1) {
+                File f = new File("./src/samples");
+
+                // Get all the names of the files present in the given directory
+                File[] files = f.listFiles();
+
+                // Prevent loading of the files if files is null
+                if (files == null) {
+                    System.out.println("Files could not be found");
+                    choice = 0;
+                    continue;
+                }
+
+                // Display the names of the files
+                for (int i = 0; i < files.length; i++) {
+                    System.out.println("Sample " + i + ": " + files[i].getName());
+                }
+
+                System.out.print("Which galaxy do you want to choose: ");
+                int sampleChoice = sc.nextInt();
+                try {
+                    bodies = CelestialBody.readGalaxy(files[sampleChoice]);
+                } catch (FileNotFoundException e) {
+                    System.out.println("File not found: " + e);
+                }
+            } else if (choice == 2) {
+                System.out.print("Enter number of bodies to be generated: ");
+                int numberOfBodies = sc.nextInt();
+
+                // k is the number of clusters. Clusters are within 3 and ln(numberOfBodies) to avoid too many clusters
+                int k = (int) Helper.getRandomNumberInRange(3, Math.log(numberOfBodies));
+
+                ArrayList<CelestialBody> arrList = new ArrayList<>();
+                // Generates k - 1 random clusters of bodies with n/k bodies inside each cluster
+                // The last portion is filled with random celestial bodies: see below
+                for (int i = 1; i < k; i++) {
+                    double positionOfClusterX = Helper.getRandomNumberInRange(-RADIUS, RADIUS);
+                    double positionOfClusterY = Helper.getRandomNumberInRange(-RADIUS, RADIUS);
+                    Vector3 clusterPosition = new Vector3(positionOfClusterX, positionOfClusterY, 0);
+                    int numberOfBodiesInCluster = numberOfBodies / k;
+                    double randomRadius = Helper.getRandomNumberInRange(RADIUS / 9, RADIUS / 5);
+                    CelestialBody.generateRandomCluster(clusterPosition, numberOfBodiesInCluster, randomRadius, arrList);
+                }
+
+                // Generates random bodies throughout the map for the last portion of the array
+                CelestialBody.generateRandom(numberOfBodies / k, RADIUS, arrList);
+
+                // Convert the ArrayList to an Array
+                bodies = arrList.toArray(bodies);
+            } else {
+                bodies = new CelestialBody[0];
+            }
+        }
 
         // Setup the canvas/window including scaling
         setupWindow();
-
-        // Number of bodies to be generated
-        //bodies = CelestialBody.generateRandom(numberOfBodies);
 
         // Create bounding box for the tree
         Vector3 upper = new Vector3(RADIUS, RADIUS, enableZCoordinate ? RADIUS : 0);
@@ -69,6 +125,7 @@ public class Simulation {
                 }
                 continue;
             }
+
             Octree octree = new Octree(boundingBox);
             for (CelestialBody body : bodies) {
                 if (octree.inBoundingBox(body)) {
@@ -108,7 +165,7 @@ public class Simulation {
                 if (key == 'l') showLeafQuads = !showLeafQuads;
                 if (key == 'm') showCenterMasses = !showCenterMasses;
                 if (key == 'f') drawAsPoint = !drawAsPoint;
-                if (key == 'r') { restartSimulation = true; break; }
+                if (key == 'r') { restartSimulation = true; dt = 0.1; break; }
                 if (key == 'p') pause = true;
                 if (key == '+') dt += 0.1;
                 if (key == '-') dt -= 0.1;
@@ -117,6 +174,7 @@ public class Simulation {
         }
     }
 
+    // Sets up the window and canvas scaling
     private static void setupWindow() {
         StdDraw.setCanvasSize(WINDOWSIZE, WINDOWSIZE);
         StdDraw.setXscale(-RADIUS, RADIUS);
@@ -125,6 +183,7 @@ public class Simulation {
         StdDraw.clear(StdDraw.BLACK);
     }
 
+    // Returns the universe radius to window size ratio
     public static double radiusWindowRatio() {
         return Simulation.RADIUS / Simulation.WINDOWSIZE;
     }

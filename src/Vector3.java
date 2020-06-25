@@ -34,12 +34,12 @@ public class Vector3 {
 
     // Returns the product of this vector and 'd'.
     public Vector3 times(double d) {
-        return new Vector3(x * d, y * d, z * d);
+        return new Vector3(this.x * d, this.y * d, this.z * d);
     }
 
     // Returns the product of this vector and 'd'.
     public Vector3 divided(double d) {
-        return new Vector3(x / d, y / d, z / d);
+        return new Vector3(this.x / d, this.y / d, this.z / d);
     }
 
     // Returns the sum of this vector and -1*v.
@@ -53,73 +53,68 @@ public class Vector3 {
     }
 
     // Returns true if all coordinates are greater or equal than vector v coordinates
-    public boolean greaterOrEqualThan(Vector3 v) { return (x >= v.x && y >= v.y && z >= v.z); }
+    public boolean greaterOrEqualThan(Vector3 v) { return (this.x >= v.x && this.y >= v.y && this.z >= v.z); }
 
     // Returns true if all coordinates are less or equal than vector v coordinates
-    public boolean lessOrEqualThan(Vector3 v) { return (x <= v.x && y <= v.y && z <= v.z); }
+    public boolean lessOrEqualThan(Vector3 v) { return (this.x <= v.x && this.y <= v.y && this.z <= v.z); }
 
     // This returns the length of a side, assuming this vector and vector
     // are upper and lower corner vectors that build a square
     // Otherwise thi will return a false value
     public double squareLength(Vector3 v) {
-        return Math.abs(this.getX() - v.getX());    // you can also subtract y or z coordinates
+        return Math.abs(this.x - v.x);    // you can also subtract y or z coordinates
     }
 
     // Normalizes this vector: changes the length of this vector such that it becomes one.
     // The direction and orientation of the vector is not affected.
     public void normalize() {
         double length = length();
-        x /= length;
-        y /= length;
-        z /= length;
+        this.x /= length;
+        this.y /= length;
+        this.z /= length;
     }
 
+    // Resets all coordinates to 0
     public void reset() {
-        x = 0;
-        y = 0;
-        z = 0;
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
     }
 
     // Draws a filled circle with the center at (x,y) coordinates of this vector
     // in the existing StdDraw canvas. The z-coordinate is not used.
     public void drawAsDot(double radius, Color color) {
         StdDraw.setPenColor(color);
-        StdDraw.filledCircle(x, y, radius);
+        StdDraw.filledCircle(this.x, this.y, radius);
     }
 
+    // Draws a point with the x, y coordinates.
+    // The radius is predetermined by StdDraw
     public void drawAsPoint(Color color) {
         StdDraw.setPenColor(color);
-        StdDraw.point(x, y);
+        StdDraw.point(this.x, this.y);
     }
 
+    // Draws a square of the specified size, centered at (x, y).
     public void drawAsSquare(double halfLength, Color color) {
         StdDraw.setPenColor(color);
-        StdDraw.square(x, y, halfLength);
+        StdDraw.square(this.x, this.y, halfLength);
     }
 
-    // Returns the coordinates of this vector in brackets as a string
-    // in the form "[x,y,z]", e.g., "[1.48E11,0.0,0.0]".
-    public String toString() {
-        return String.format("[%s, %s, %s]", x, y, z);
-    }
-
-    // Prints the coordinates of this vector in brackets to the console (without newline)
-    // in the form [x,y,z], e.g.,
-    // [1.48E11,0.0,0.0]
-    public void print() {
-        System.out.print(toString());
-    }
-
+    // Returns x
     public double getX() {
-        return x;
+        return this.x;
     }
 
+    // Returns y
     public double getY() {
-        return y;
+        return this.y;
     }
 
+    // Returns z
     public double getZ() {
-        return z;
+        return this.z;
     }
+
 }
 
